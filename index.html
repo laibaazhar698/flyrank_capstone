@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Refresh Opportunity Scoring — A Content Review Model for Search Performance</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#F6F6F2;
+    --ink:#1C2027;
+    --ink-soft:#4B5160;
+    --line:#D8D9D3;
+    --teal:#2C6B62;
+    --teal-soft:#E4EEEC;
+    --amber:#A9631D;
+    --amber-soft:#F3E7D8;
+    --serif: 'Newsreader', Georgia, serif;
+    --sans: 'IBM Plex Sans', -apple-system, sans-serif;
+    --mono: 'IBM Plex Mono', monospace;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:var(--sans);
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:760px;margin:0 auto;padding:0 28px;}
+
+  header.hero{
+    padding:96px 0 64px;
+    border-bottom:1px solid var(--line);
+  }
+  .kicker{
+    font-family:var(--mono);
+    font-size:13px;
+    color:var(--teal);
+    margin:0 0 20px;
+  }
+  h1{
+    font-family:var(--serif);
+    font-weight:500;
+    font-size:44px;
+    line-height:1.15;
+    margin:0 0 22px;
+    letter-spacing:-0.01em;
+  }
+  .dek{
+    font-size:18px;
+    color:var(--ink-soft);
+    max-width:60ch;
+    margin:0;
+  }
+  .meta-row{
+    display:flex;
+    gap:28px;
+    margin-top:36px;
+    flex-wrap:wrap;
+  }
+  .meta-item{font-size:13px;color:var(--ink-soft);}
+  .meta-item strong{display:block;color:var(--ink);font-size:14px;font-weight:600;}
+
+  section{padding:56px 0;border-bottom:1px solid var(--line);}
+  section:last-of-type{border-bottom:none;}
+  h2{
+    font-family:var(--serif);
+    font-weight:500;
+    font-size:28px;
+    margin:0 0 22px;
+    display:flex;
+    align-items:baseline;
+    gap:12px;
+  }
+  h2 .num{
+    font-family:var(--mono);
+    font-size:15px;
+    color:var(--teal);
+    font-weight:500;
+  }
+  h3{
+    font-family:var(--sans);
+    font-weight:600;
+    font-size:17px;
+    margin:32px 0 12px;
+  }
+  p{margin:0 0 16px;max-width:68ch;}
+  ul, ol{margin:0 0 16px;padding-left:22px;}
+  li{margin-bottom:8px;max-width:64ch;}
+  a{color:var(--teal);}
+
+  .abstract-box{
+    background:#fff;
+    border:1px solid var(--line);
+    border-left:3px solid var(--teal);
+    padding:24px 28px;
+    margin-top:28px;
+  }
+  .abstract-box p{margin:0;font-size:16px;}
+
+  .callout{
+    background:var(--teal-soft);
+    border-radius:2px;
+    padding:18px 20px;
+    font-size:14.5px;
+    margin:20px 0;
+  }
+  .callout.warn{background:var(--amber-soft);}
+
+  .chart{margin:28px 0;}
+  .chart-title{font-size:13px;font-family:var(--mono);color:var(--ink-soft);margin-bottom:14px;}
+  .bar-row{display:flex;align-items:center;gap:14px;margin-bottom:10px;}
+  .bar-label{width:150px;font-size:13px;color:var(--ink-soft);flex-shrink:0;}
+  .bar-track{flex:1;background:#EDEEE9;height:22px;position:relative;}
+  .bar-fill{height:100%;background:var(--teal);}
+  .bar-fill.amber{background:var(--amber);}
+  .bar-val{font-family:var(--mono);font-size:12.5px;width:44px;text-align:right;flex-shrink:0;}
+
+  .compare-group{margin-bottom:22px;}
+  .compare-k{font-family:var(--mono);font-size:13px;color:var(--ink-soft);margin-bottom:6px;}
+
+  .action-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:14px;
+    margin:24px 0;
+  }
+  .action-card{
+    border:1px solid var(--line);
+    padding:16px 18px;
+    background:#fff;
+  }
+  .action-card .count{font-family:var(--serif);font-size:28px;margin:0 0 4px;}
+  .action-card .label{font-size:13px;color:var(--ink-soft);}
+
+  .footer-note{
+    font-size:13px;
+    color:var(--ink-soft);
+    padding:40px 0 80px;
+  }
+  .footer-note a{color:var(--teal);}
+
+  code{
+    font-family:var(--mono);
+    background:#EDEEE9;
+    padding:2px 5px;
+    font-size:13px;
+  }
+
+  @media (max-width:600px){
+    h1{font-size:32px;}
+    .action-grid{grid-template-columns:1fr;}
+    .meta-row{gap:18px;}
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="wrap">
+    <p class="kicker">FlyRank ML Internship — Search Intelligence Capstone</p>
+    <h1>Which pages are quietly losing ground — and which ones are worth saving?</h1>
+    <p class="dek">A refresh-opportunity model that ranks content by decline risk, tested against a simple staleness rule, on 30,000 anonymized pages.</p>
+    <div class="meta-row">
+      <div class="meta-item"><strong>Lane</strong>Refresh / Content Opportunity Scoring</div>
+      <div class="meta-item"><strong>Pages analyzed</strong>30,000</div>
+      <div class="meta-item"><strong>Model</strong>Random Forest, client-agnostic</div>
+    </div>
+  </div>
+</header>
+
+<section id="abstract">
+  <div class="wrap">
+    <h2><span class="num">01</span>Abstract</h2>
+    <div class="abstract-box">
+      <p>Content teams need a way to tell which pages are declining before traffic disappears, without reviewing every page by hand. This project asks whether a learned model can rank pages by decline risk more precisely than a simple staleness-and-visibility rule. Using 30,000 anonymized content records with pre-decision signals only, a Random Forest classifier was trained to predict a 90-day decline label and validated on a held-out test split. The model reached 0.90 precision in its top 20 ranked pages, against 0.50 for the hand-written baseline on the same split. The result is a ranked action list — pages flagged Improve, Protect, Rewrite, or Monitor — with the reasoning behind each flag, so a content team can prioritize review time toward the pages most likely to be slipping.</p>
+    </div>
+  </div>
+</section>
+
+<section id="intro">
+  <div class="wrap">
+    <h2><span class="num">02</span>Introduction</h2>
+    <p>Search content decays quietly. A page can hold its position for months and then slide — losing impressions, clicks, and revenue — long before anyone notices, because nobody is checking all of it at once. Large content libraries make manual review impractical: a team reviewing every page on a fixed schedule spends the same attention on pages that are fine as on pages that are actively failing.</p>
+    <p>The decision this work supports is simple to state and hard to do by hand: <strong>given a library of pages, which ones should a content team look at first?</strong> A ranking that reliably puts declining pages near the top turns an unbounded review task into a short, prioritized list. This capstone builds that ranking, compares it honestly against a rule a human would write by hand, and turns the result into a reusable action playbook.</p>
+  </div>
+</section>
+
+<section id="data">
+  <div class="wrap">
+    <h2><span class="num">03</span>Data</h2>
+    <p>The analysis uses the anonymized content-refresh release shipped with the FlyRank ML Internship starter repository — <code>content_refresh_anonymized.csv</code> — which contains 30,000 content records across pseudonymized clients. Each row describes one piece of content with 45 fields, including content age, time since last update, 90-day impressions, average search position, click-through rate, word count, and a trend label describing whether performance moved up, down, or stayed stable over the observed window.</p>
+    <p>No client names, domains, URLs, or raw queries appear anywhere in this dataset or in this write-up. All identifiers are hashed content and client IDs, consistent with the public-safe handling required for this work.</p>
+    <h3>What was excluded, and why</h3>
+    <ul>
+      <li><strong>Rows with missing core signals</strong> were kept but imputed to zero for tree-based modeling rather than dropped, since Random Forests handle sparse signal reasonably and dropping rows would bias the sample toward older, more complete content.</li>
+      <li><strong><code>trend_pct</code></strong> was deliberately excluded from every modeling feature set. It is the exact percentage change the decline label is derived from, so including it would let the model read the answer directly rather than learn from independent signals — see Methodology below.</li>
+      <li><strong>Product-generated decision flags</strong> (health scores, "needs review" tags, and similar fields) are not present in this release in the first place, which keeps every feature honestly pre-decision.</li>
+    </ul>
+  </div>
+</section>
+
+<section id="method">
+  <div class="wrap">
+    <h2><span class="num">04</span>Methodology</h2>
+
+    <h3>Label definition</h3>
+    <p>The target is binary: a page is labeled <strong>declining</strong> (1) when its recorded trend direction is "down," and <strong>not declining</strong> (0) otherwise. Across the full dataset, 54.2% of pages carry the declining label — a fairly balanced split, which is one reason class-balanced weighting was used rather than resampling.</p>
+
+    <h3>Features</h3>
+    <p>Six pre-decision signals were used for every model in this report: content age in days, days since last update, 90-day impressions, average search position, click-through rate, and word count. Each of these is knowable before any human or system decides a page is declining — none of them encode the outcome itself.</p>
+
+    <h3>Baseline: a rule a person would write</h3>
+    <p>Before modeling, a hand-written rule was defined as the comparison point: a page is worth reviewing if it is <em>stale</em> (no update in 180+ days) and <em>visible</em> (500+ impressions in the last 90 days), scored by how much exposure it carries. This mirrors how a content team would triage manually — it's a reasonable, legible starting point, not a strawman.</p>
+
+    <h3>Validation design</h3>
+    <p>Data was split 75/25 into train and test sets with stratification on the label, using a fixed random seed for reproducibility. The model never sees test-set rows during training. Both the learned model and the hand-written baseline are scored on the identical held-out test rows, so the comparison in the Results section is apples-to-apples rather than the model being evaluated on easier data.</p>
+
+    <h3>Leakage check</h3>
+    <div class="callout warn">
+      <strong>Why <code>trend_pct</code> is excluded:</strong> this field is the exact percentage change the decline label is computed from. Feeding it into the model as a feature was tested deliberately during development and produced near-perfect precision — a clear sign the model was reading the answer rather than learning a pattern. The rule applied throughout this project: if a feature would only be known because someone already made the decision being predicted, it is left out.
+    </div>
+
+    <h3>Model</h3>
+    <p>A Random Forest classifier (200 trees, max depth 6, balanced class weights) was trained on the six pre-decision features. Random Forest was chosen over a single decision tree because a single shallow tree can only express a handful of distinct scores, which compresses too many pages into tied ranks to produce a usable priority order at scale.</p>
+  </div>
+</section>
+
+<section id="results">
+  <div class="wrap">
+    <h2><span class="num">05</span>Results</h2>
+    <p>The metric used throughout is <strong>Precision@K</strong>: of the top K pages a ranking surfaces, what fraction are genuinely declining. This is the right metric for a review queue, where a team will only ever work through the top of the list.</p>
+
+    <div class="chart">
+      <div class="chart-title">PRECISION@K — MODEL VS. BASELINE, SAME TEST SET</div>
+      <div class="compare-group">
+        <div class="compare-k">Top 20</div>
+        <div class="bar-row"><div class="bar-label">Hand-rule baseline</div><div class="bar-track"><div class="bar-fill amber" style="width:50%"></div></div><div class="bar-val">0.50</div></div>
+        <div class="bar-row"><div class="bar-label">Random Forest</div><div class="bar-track"><div class="bar-fill" style="width:90%"></div></div><div class="bar-val">0.90</div></div>
+      </div>
+      <div class="compare-group">
+        <div class="compare-k">Top 50</div>
+        <div class="bar-row"><div class="bar-label">Hand-rule baseline</div><div class="bar-track"><div class="bar-fill amber" style="width:54%"></div></div><div class="bar-val">0.54</div></div>
+        <div class="bar-row"><div class="bar-label">Random Forest</div><div class="bar-track"><div class="bar-fill" style="width:84%"></div></div><div class="bar-val">0.84</div></div>
+      </div>
+      <div class="compare-group">
+        <div class="compare-k">Top 100</div>
+        <div class="bar-row"><div class="bar-label">Hand-rule baseline</div><div class="bar-track"><div class="bar-fill amber" style="width:59%"></div></div><div class="bar-val">0.59</div></div>
+        <div class="bar-row"><div class="bar-label">Random Forest</div><div class="bar-track"><div class="bar-fill" style="width:90%"></div></div><div class="bar-val">0.90</div></div>
+      </div>
+    </div>
+
+    <p>The model holds a wide margin over the baseline at every cutoff tested, and the gap is largest right where it matters most for a review queue — the top 20. The hand-rule baseline treats staleness and visibility as hard cutoffs, which is easy to explain but throws away information; the model learns how those same signals interact continuously.</p>
+
+    <div class="chart">
+      <div class="chart-title">FEATURE IMPORTANCE — RANDOM FOREST</div>
+      <div class="bar-row"><div class="bar-label">90-day impressions</div><div class="bar-track"><div class="bar-fill" style="width:97%"></div></div><div class="bar-val">.34</div></div>
+      <div class="bar-row"><div class="bar-label">Average position</div><div class="bar-track"><div class="bar-fill" style="width:70%"></div></div><div class="bar-val">.25</div></div>
+      <div class="bar-row"><div class="bar-label">Content age (days)</div><div class="bar-track"><div class="bar-fill" style="width:56%"></div></div><div class="bar-val">.20</div></div>
+      <div class="bar-row"><div class="bar-label">Word count</div><div class="bar-track"><div class="bar-fill" style="width:30%"></div></div><div class="bar-val">.10</div></div>
+      <div class="bar-row"><div class="bar-label">Click-through rate</div><div class="bar-track"><div class="bar-fill" style="width:17%"></div></div><div class="bar-val">.06</div></div>
+      <div class="bar-row"><div class="bar-label">Days since last update</div><div class="bar-track"><div class="bar-fill" style="width:13%"></div></div><div class="bar-val">.05</div></div>
+    </div>
+    <p>Impressions and average position together account for roughly 60% of what the model relies on — decline risk shows up first in how much exposure a page still has and where it sits in results, with content age acting as a secondary signal. Notably, days-since-last-update — the entire basis of the hand-rule baseline — is the least important feature to the model on its own, which helps explain why a rule built around it alone under-performs.</p>
+  </div>
+</section>
+
+<section id="limitations">
+  <div class="wrap">
+    <h2><span class="num">06</span>Limitations &amp; honest framing</h2>
+    <ul>
+      <li><strong>Observed, not causal.</strong> This model reports association between signals and decline, not why a page declines. A high decline-risk score is a prompt to review a page, not a diagnosis of what's wrong with it.</li>
+      <li><strong>Single time window.</strong> The dataset reflects one snapshot period. Whether these same features carry the same importance across seasons or content categories has not been tested here and would need a rolling evaluation.</li>
+      <li><strong>In-sample scoring for the action list.</strong> The ranked recommendations in Section 07 score every page, including rows the model trained on. The precision numbers in Section 05 are the honest, held-out figures — the action list itself is a deployment artifact, not a second evaluation.</li>
+      <li><strong>No client-holdout split performed in this pass.</strong> The 75/25 split is row-level, not grouped by client. If a small number of clients dominate the "declining" class, some of the model's apparent skill could be client-specific pattern-matching rather than a signal that generalizes to a completely new client. This is the single most important next check before trusting the model in production, and is flagged explicitly rather than glossed over.</li>
+      <li><strong>Decision-support, not decision-making.</strong> The Improve / Protect / Rewrite / Monitor labels are a starting triage, not a replacement for editorial judgment about a specific page.</li>
+    </ul>
+  </div>
+</section>
+
+<section id="recommendations">
+  <div class="wrap">
+    <h2><span class="num">07</span>Ranked recommendations</h2>
+    <p>Every page was scored for decline risk and assigned to one of four actions based on its risk score combined with current visibility and staleness:</p>
+
+    <div class="action-grid">
+      <div class="action-card"><p class="count">274</p><p class="label">Improve — high risk, still visible, worth saving</p></div>
+      <div class="action-card"><p class="count">239</p><p class="label">Protect — performing well, leave as is</p></div>
+      <div class="action-card"><p class="count">150</p><p class="label">Monitor — high risk, low visibility, low priority</p></div>
+      <div class="action-card"><p class="count">5</p><p class="label">Rewrite — very stale content</p></div>
+    </div>
+
+    <p>The <strong>Improve</strong> group is the priority queue: 274 pages that are both at high statistical risk of decline and still carrying meaningful search visibility, meaning there's an audience left to recover before it disappears. A content team should work this list top-down, ordered by impressions, since every additional day of decay costs more of the traffic that's still there. The highest-exposure page in this group alone carries over 26,000 90-day impressions at a 5% click-through rate — a page clearly still being served in results, but converting very few of those impressions into clicks, and now flagged as trending down.</p>
+
+    <div class="callout">
+      <strong>Playbook:</strong> Improve → editorial refresh this week, prioritized by impressions. Protect → no action, re-check next cycle. Monitor (low visibility) → batch review monthly, not urgent. Rewrite → structural rebuild, these pages are stale enough that a refresh alone is unlikely to help.
+    </div>
+  </div>
+</section>
+
+<section id="repro">
+  <div class="wrap">
+    <h2><span class="num">08</span>Reproducibility</h2>
+    <p>All notebooks referenced in this report live in the project repository, runnable end-to-end in Google Colab with no credentials required for the core analysis (the anonymized starter dataset ships with the repo).</p>
+    <ul>
+      <li><code>work/01_first_look_and_discovery.ipynb</code> — first exploration of the anonymized dataset</li>
+      <li><code>work/02_your_first_readable_model.ipynb</code> — hand-rule baseline, a readable depth-2 tree, and the leakage demonstration this report's methodology builds on</li>
+      <li><code>work/capstone_notebook.ipynb</code> — the full analysis behind this report: baseline, Random Forest, precision comparison, feature importance, and the ranked action list</li>
+    </ul>
+    <p>Repository: <a href="https://github.com/laibaazhar698/flyrank_capstone" target="_blank" rel="noopener">github.com/laibaazhar698/flyrank_capstone</a></p>
+  </div>
+</section>
+
+<div class="footer-note">
+  <div class="wrap">
+    <p>Built on the FlyRank ML Internship dataset — <a href="https://flyrank.ai" target="_blank" rel="noopener">flyrank.ai</a>.</p>
+  </div>
+</div>
+
+</body>
+</html>
